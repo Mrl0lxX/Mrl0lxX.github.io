@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmed Alaa - Security Researcher</title>
+<style>
+:root{
+  --bg:#0a0e14;
+  --bg2:#0d1117;
+  --panel:#11161f;
+  --line:#1e2733;
+  --green:#39d353;
+  --cyan:#39c5cf;
+  --red:#f85149;
+  --text:#c9d1d9;
+  --dim:#8b949e;
+  --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--mono);
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:var(--green);color:#000}
+
+/* scanline ambience */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.12) 2px 4px);
+  opacity:.25;
+}
+
+a{color:var(--cyan);text-decoration:none}
+a:hover{color:var(--green);text-shadow:0 0 8px rgba(57,211,83,.5)}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;
+  padding:.7rem 1rem;
+  background:rgba(10,14,20,.85);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+  font-size:.8rem;
+}
+nav a{color:var(--dim)}
+nav a:hover{color:var(--green)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:5rem 1rem 3rem;
+  position:relative;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 40%,rgba(57,211,83,.07),transparent 60%);
+}
+.term{
+  width:min(760px,100%);
+  background:var(--bg2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(57,211,83,.06);
+  overflow:hidden;
+}
+.term-bar{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.7rem 1rem;
+  background:#161b22;
+  border-bottom:1px solid var(--line);
+}
+.dot{width:12px;height:12px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.term-title{margin-left:.6rem;color:var(--dim);font-size:.75rem}
+.term-body{padding:1.4rem 1.4rem 1.8rem;font-size:.92rem}
+.line{margin:.15rem 0;word-break:break-word}
+.prompt{color:var(--green)}
+.out{color:var(--dim)}
+.name{
+  font-size:clamp(2rem,7vw,3.4rem);
+  font-weight:800;letter-spacing:.02em;
+  color:#fff;
+  margin:.6rem 0 .3rem;
+  text-shadow:0 0 30px rgba(57,211,83,.35);
+}
+.name .cursor{display:inline-block;width:.55em;background:var(--green);animation:blink 1s steps(1) infinite;height:.9em;vertical-align:baseline;margin-left:.15em}
+@keyframes blink{50%{opacity:0}}
+.role{font-size:clamp(.85rem,3vw,1.05rem);color:var(--cyan)}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
+.chip{
+  padding:.3rem .8rem;font-size:.75rem;border-radius:999px;
+  border:1px solid var(--line);color:var(--dim);background:#0d1117;
+  transition:all .25s;
+}
+.chip:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(57,211,83,.25)}
+
+/* LAYOUT */
+main{width:min(900px,100%);margin:0 auto;padding:2rem 1rem 4rem}
+section{margin:3.2rem 0;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+section.visible{opacity:1;transform:none}
+h2{
+  font-size:1.15rem;color:var(--green);
+  margin-bottom:1.2rem;display:flex;align-items:center;gap:.7rem;
+}
+h2::before{content:"$";color:var(--dim)}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:1.1rem 1.2rem;transition:all .25s;
+}
+.card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.card h3{color:#fff;font-size:.95rem;margin-bottom:.4rem}
+.card p{color:var(--dim);font-size:.82rem}
+
+/* TOOLS */
+.tools{display:flex;flex-wrap:wrap;gap:.55rem}
+.tool{
+  font-size:.78rem;padding:.28rem .75rem;border-radius:6px;
+  background:#161b22;border:1px solid var(--line);color:var(--text);
+}
+.tool:hover{border-color:var(--cyan);color:var(--cyan)}
+
+/* TIMELINE */
+.timeline{border-left:2px solid var(--line);padding-left:1.4rem;position:relative}
+.tl-item{margin-bottom:1.6rem;position:relative}
+.tl-item::before{
+  content:"";position:absolute;left:calc(-1.4rem - 6px);top:.45rem;
+  width:10px;height:10px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 10px rgba(57,211,83,.6);
+}
+.tl-date{color:var(--cyan);font-size:.75rem}
+.tl-item h3{color:#fff;font-size:.95rem;margin:.2rem 0}
+.tl-item p,.tl-item li{color:var(--dim);font-size:.83rem}
+ul{list-style:none;margin-top:.5rem}
+li::before{content:"▸ ";color:var(--green)}
+
+/* FINDINGS */
+.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
+.finding{
+  text-align:center;padding:1.2rem .8rem;border-radius:10px;
+  background:var(--panel);border:1px solid var(--line);
+}
+.finding .bug{color:var(--red);font-weight:700;font-size:1.05rem}
+.finding .ok{color:var(--green);font-size:.75rem}
+.note{color:var(--dim);font-size:.75rem;margin-top:1rem;text-align:center}
+
+/* FINDING DETAIL */
+.finding-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:1.15rem 1.25rem;margin-top:1.1rem;transition:all .25s;
+}
+.finding-card:hover{border-color:var(--green);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.fc-head{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem}
+.fc-title{color:#fff;font-size:.95rem;font-weight:700;line-height:1.35}
+.sev{
+  font-size:.68rem;letter-spacing:.04em;padding:.12rem .55rem;border-radius:999px;
+  border:1px solid var(--red);color:var(--red);background:rgba(248,81,73,.08);
+  white-space:nowrap;
+}
+.sev.ok{border-color:var(--green);color:var(--green);background:rgba(57,211,83,.08)}
+.fc-prog{color:var(--cyan);font-size:.76rem;margin-top:.4rem;word-break:break-word}
+.fc-rows{margin-top:.9rem;display:grid;gap:.65rem}
+.fc-row{display:grid;grid-template-columns:86px 1fr;gap:.75rem}
+.fc-k{
+  color:var(--dim);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  padding-top:.1rem;
+}
+.fc-v{color:var(--text);font-size:.82rem}
+
+/* CONTACT */
+.contact a{display:block;padding:.4rem 0;font-size:.9rem}
+.contact .k{color:var(--dim);font-size:.78rem}
+
+footer{
+  text-align:center;color:var(--dim);font-size:.72rem;
+  padding:2rem 1rem;border-top:1px solid var(--line);
+}
+
+@media(max-width:600px){
+  nav{font-size:.72rem;gap:.8rem}
+  .term-body{padding:1rem}
+  .fc-row{grid-template-columns:1fr;gap:.1rem}
+  .fc-k{padding-top:0}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#summary">summary</a>
+  <a href="#skills">skills</a>
+  <a href="#stack">stack</a>
+  <a href="#experience">experience</a>
+  <a href="#research">research</a>
+  <a href="#findings">findings</a>
+  <a href="#education">education</a>
+  <a href="#contact">contact</a>
+</nav>
+
+<header class="hero">
+  <div class="term">
+    <div class="term-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term-title">ahmed@sec: ~/portfolio</span>
+    </div>
+    <div class="term-body">
+      <div class="line"><span class="prompt">ahmed@sec:~$</span> <span id="typed"></span></div>
+      <div class="line out" id="boot1" style="display:none">[+] identity verified</div>
+      <div class="line out" id="boot2" style="display:none">[+] loading profile...</div>
+      <h1 class="name" id="nameEl" style="display:none">Ahmed Alaa<span class="cursor"></span></h1>
+      <p class="role" id="roleEl" style="display:none">Cybersecurity Specialist · Bug Bounty Hunter · Security Researcher</p>
+      <div class="chips" id="chipsEl" style="display:none">
+        <span class="chip">Egypt</span>
+        <a class="chip" href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
+        <a class="chip" href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener">Bugcrowd /Mrl0lxX</a>
+        <a class="chip" href="https://www.comcast.com" target="_blank" rel="noopener">Hall of Fame - Comcast</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section id="summary">
+  <h2>whoami</h2>
+  <div class="card">
+    <p>Cybersecurity professional with hands-on experience in web application security, vulnerability assessment, and bug bounty hunting. Currently working in a government cybersecurity role, with strong expertise in attack surface mapping, reconnaissance, web security testing, and responsible vulnerability disclosure.</p>
+    <p style="margin-top:.7rem">Focused on identifying complex web application vulnerabilities, improving security posture, and delivering clear remediation guidance for technical and executive stakeholders.</p>
+  </div>
+</section>
+
+<section id="skills">
+  <h2>core skills</h2>
+  <div class="grid">
+    <div class="card"><h3>Web Application Security</h3><p>Application testing, session management, authentication, and OWASP risk reduction.</p></div>
+    <div class="card"><h3>Bug Bounty Hunting</h3><p>Private program invitations, vulnerability discovery, responsible disclosure, and reporting.</p></div>
+    <div class="card"><h3>Reconnaissance</h3><p>Attack surface mapping, subdomain discovery, asset analysis, and targeted reconnaissance.</p></div>
+    <div class="card"><h3>Advanced Exploitation</h3><p>XSS, SSRF, HTTP request smuggling, business logic bypasses, and API security testing.</p></div>
+  </div>
+</section>
+
+<section id="stack">
+  <h2>technical stack</h2>
+  <div class="tools" style="margin-bottom:.7rem">
+    <span class="tool">Burp Suite</span><span class="tool">Nuclei</span><span class="tool">Nmap</span>
+    <span class="tool">FFUF</span><span class="tool">Amass</span><span class="tool">Subfinder</span>
+    <span class="tool">httpx</span><span class="tool">Katana</span><span class="tool">SQLMap</span><span class="tool">Wireshark</span>
+  </div>
+  <div class="tools">
+    <span class="tool">Python</span><span class="tool">PHP</span><span class="tool">HTML</span>
+    <span class="tool">JavaScript</span><span class="tool">Linux</span><span class="tool">Kali Linux</span><span class="tool">Windows</span>
+  </div>
+</section>
+
+<section id="experience">
+  <h2>experience</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <span class="tl-date">2024 - Present</span>
+      <h3>Cybersecurity Specialist · Government Organization</h3>
+      <p>Delivering security assessments, vulnerability validation, and risk reduction for web applications and services.</p>
+      <ul>
+        <li>Conduct security assessments and vulnerability validation activities</li>
+        <li>Analyze web applications and services for security weaknesses</li>
+        <li>Support security operations and risk reduction initiatives</li>
+        <li>Produce technical findings and remediation recommendations</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="research">
+  <h2>bug bounty & research</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <h3>Independent Security Researcher</h3>
+      <p>Active participant in bug bounty programs and private invitations, focused on discovering complex issues and delivering high-quality disclosure.</p>
+      <ul>
+        <li>Large-scale reconnaissance and asset discovery</li>
+        <li>Focus on XSS, SSRF, API Security, Request Smuggling, and Business Logic issues</li>
+        <li>Responsible vulnerability disclosure and technical reporting</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="findings">
+  <h2>confirmed findings</h2>
+  <div class="findings">
+    <div class="finding"><div class="bug">XSS</div><div class="ok">✓ accepted</div></div>
+    <div class="finding"><div class="bug">SSRF</div><div class="ok">✓ accepted</div></div>
+    <div class="finding"><div class="bug">Business Logic</div><div class="ok">✓ accepted</div></div>
+  </div>
+  <div class="finding-card">
+    <div class="fc-head">
+      <span class="fc-title">Reflected XSS via Attribute Injection</span>
+      <span class="sev">P3</span>
+      <span class="sev ok">&#10003; accepted &amp; rewarded</span>
+    </div>
+    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
+    <div class="fc-rows">
+      <div class="fc-row">
+        <div class="fc-k">summary</div>
+        <div class="fc-v">Unsafe handling of user input inside an HTML attribute on a login page allowed script execution in a victim's browser.</div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-k">impact</div>
+        <div class="fc-v">Possible actions in the context of a user's session.</div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-k">remediation</div>
+        <div class="fc-v">Context-aware output encoding, strict input validation and a CSP.</div>
+      </div>
+    </div>
+  </div>
+  <div class="finding-card">
+    <div class="fc-head">
+      <span class="fc-title">Reflected XSS, Fix Bypass on Production</span>
+      <span class="sev">P3</span>
+      <span class="sev ok">&#10003; accepted &amp; rewarded</span>
+    </div>
+    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
+    <div class="fc-rows">
+      <div class="fc-row">
+        <div class="fc-k">summary</div>
+        <div class="fc-v">The issue was closed on a test environment, and I showed it persisted on production, so the fix was incomplete.</div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-k">remediation</div>
+        <div class="fc-v">Fix in shared code rather than per environment, with context-aware output encoding.</div>
+      </div>
+    </div>
+  </div>
+  <div class="finding-card">
+    <div class="fc-head">
+      <span class="fc-title">Reflected XSS in a GIS Server Management Interface</span>
+      <span class="sev">P3</span>
+      <span class="sev ok">&#10003; accepted</span>
+    </div>
+    <div class="fc-prog">Comcast Xfinity Vulnerability Disclosure Program (Bugcrowd)</div>
+    <div class="fc-rows">
+      <div class="fc-row">
+        <div class="fc-k">summary</div>
+        <div class="fc-v">A proxy-style parameter reflected user-supplied content into an HTML response, and a WAF keyword filter was not sufficient to stop script execution.</div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-k">remediation</div>
+        <div class="fc-v">Encode output by context and validate the parameter against an allowlist, rather than relying on WAF keyword filtering.</div>
+      </div>
+    </div>
+  </div>
+  <div class="finding-card">
+    <div class="fc-head">
+      <span class="fc-title">Reflected XSS in a Test Environment Management Interface</span>
+      <span class="sev">P3</span>
+      <span class="sev ok">&#10003; accepted &middot; rewarded &middot; resolved</span>
+    </div>
+    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
+    <div class="fc-rows">
+      <div class="fc-row">
+        <div class="fc-k">summary</div>
+        <div class="fc-v">A proxy-style parameter reflected user-supplied content into an HTML response, and the issue was fixed by the vendor team.</div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-k">remediation</div>
+        <div class="fc-v">Context-aware output encoding and parameter allowlisting.</div>
+      </div>
+    </div>
+  </div>
+  <p class="note">// all interactions on this page are presentation-only - no forms, no inputs, no data collected</p>
+</section>
+
+<section id="education">
+  <h2>education</h2>
+  <div class="card">
+    <h3>Bachelor's Degree (In Progress) - MET Academy, Mansoura</h3>
+    <p>Graduation project on vulnerability discovery, with multiple university website vulnerabilities identified during studies.</p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>contact</h2>
+  <div class="card contact">
+    <span class="k">location</span>
+    <a href="#">Egypt</a>
+    <span class="k">phone</span>
+    <a href="tel:+201030634965">01030634965</a>
+    <span class="k">email</span>
+    <a href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
+    <span class="k">bugcrowd</span>
+    <a href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener">bugcrowd.com/h/Mrl0lxX</a>
+    <span class="k">hall of fame</span>
+    <a href="https://www.comcast.com" target="_blank" rel="noopener">Comcast</a>
+  </div>
+</section>
+
+</main>
+
+<footer>© Ahmed Alaa - built with curiosity & coffee</footer>
+
+<script>
+(function(){
+  // typing intro
+  var cmd = './start-portfolio.sh --mode=hire-me';
+  var el = document.getElementById('typed');
+  var i = 0;
+  function type(){
+    if(i <= cmd.length){
+      el.textContent = cmd.slice(0, i++);
+      setTimeout(type, 45);
+    } else {
+      setTimeout(function(){
+        document.getElementById('boot1').style.display = 'block';
+        setTimeout(function(){
+          document.getElementById('boot2').style.display = 'block';
+          setTimeout(function(){
+            document.getElementById('nameEl').style.display = 'block';
+            document.getElementById('roleEl').style.display = 'block';
+            document.getElementById('chipsEl').style.display = 'flex';
+          }, 350);
+        }, 250);
+      }, 200);
+    }
+  }
+  type();
+
+  // scroll reveal
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, {threshold:.12});
+  document.querySelectorAll('section').forEach(function(s){ obs.observe(s); });
+})();
+</script>
+</body>
+</html>

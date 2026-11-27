@@ -3,7 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ahmed Alaa - Security Researcher</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; manifest-src 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Ahmed Alaa - security researcher and bug bounty hunter. Six valid P3 reports, five of them reflected XSS, accepted on a major US telecom program and a private engagement. Responsible disclosure.">
+<title>Ahmed Alaa - Security Researcher &amp; Bug Bounty Hunter</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%230a0e14' stroke='%2339d353'/%3E%3C/svg%3E">
 <style>
 :root{
   --bg:#0a0e14;
@@ -13,12 +17,13 @@
   --green:#39d353;
   --cyan:#39c5cf;
   --red:#f85149;
-  --text:#c9d1d9;
-  --dim:#8b949e;
+  --amber:#d29922;
+  --text:#d5dbe2;
+  --dim:#9aa4b0;
   --mono:'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:4rem}
 body{
   background:var(--bg);
   color:var(--text);
@@ -28,33 +33,39 @@ body{
 }
 ::selection{background:var(--green);color:#000}
 
-/* scanline ambience */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(0,0,0,.12) 2px 4px);
-  opacity:.25;
+  opacity:.22;
 }
 
 a{color:var(--cyan);text-decoration:none}
-a:hover{color:var(--green);text-shadow:0 0 8px rgba(57,211,83,.5)}
+a:hover{color:var(--green)}
+a:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:2px}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:200;
+  background:var(--green);color:#000;padding:.5rem 1rem;font-size:.85rem;font-weight:700;
+}
+.skip:focus{left:0}
 
 /* NAV */
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;
+  display:flex;gap:1.1rem;flex-wrap:wrap;justify-content:center;
   padding:.7rem 1rem;
-  background:rgba(10,14,20,.85);backdrop-filter:blur(10px);
+  background:rgba(10,14,20,.88);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
   font-size:.8rem;
 }
-nav a{color:var(--dim)}
+nav a{color:var(--dim);padding:.15rem .2rem}
 nav a:hover{color:var(--green)}
 
 /* HERO */
 .hero{
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  padding:5rem 1rem 3rem;
+  min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6rem;
+  padding:5.5rem 1rem 3rem;
   position:relative;
 }
 .hero::after{
@@ -62,12 +73,13 @@ nav a:hover{color:var(--green)}
   background:radial-gradient(ellipse at 50% 40%,rgba(57,211,83,.07),transparent 60%);
 }
 .term{
-  width:min(760px,100%);
+  width:min(780px,100%);
   background:var(--bg2);
   border:1px solid var(--line);
   border-radius:12px;
   box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 40px rgba(57,211,83,.06);
   overflow:hidden;
+  position:relative;z-index:1;
 }
 .term-bar{
   display:flex;align-items:center;gap:.5rem;
@@ -78,31 +90,52 @@ nav a:hover{color:var(--green)}
 .dot{width:12px;height:12px;border-radius:50%}
 .dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
 .term-title{margin-left:.6rem;color:var(--dim);font-size:.75rem}
-.term-body{padding:1.4rem 1.4rem 1.8rem;font-size:.92rem}
+.term-body{padding:1.4rem 1.5rem 1.8rem;font-size:.95rem}
 .line{margin:.15rem 0;word-break:break-word}
 .prompt{color:var(--green)}
-.out{color:var(--dim)}
+.cursor{display:inline-block;width:.55em;height:1em;background:var(--green);vertical-align:text-bottom;margin-left:.15em;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.boot-line{color:var(--dim);font-size:.85rem}
 .name{
-  font-size:clamp(2rem,7vw,3.4rem);
+  font-size:clamp(2.1rem,7vw,3.4rem);
   font-weight:800;letter-spacing:.02em;
   color:#fff;
-  margin:.6rem 0 .3rem;
+  margin:.7rem 0 .2rem;
   text-shadow:0 0 30px rgba(57,211,83,.35);
 }
-.name .cursor{display:inline-block;width:.55em;background:var(--green);animation:blink 1s steps(1) infinite;height:.9em;vertical-align:baseline;margin-left:.15em}
-@keyframes blink{50%{opacity:0}}
 .role{font-size:clamp(.85rem,3vw,1.05rem);color:var(--cyan)}
-.chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
-.chip{
-  padding:.3rem .8rem;font-size:.75rem;border-radius:999px;
-  border:1px solid var(--line);color:var(--dim);background:#0d1117;
-  transition:all .25s;
+.value{
+  margin-top:.9rem;font-size:clamp(.95rem,3.2vw,1.12rem);color:var(--text);max-width:46ch;
 }
-.chip:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 12px rgba(57,211,83,.25)}
+.value strong{color:var(--green)}
+.cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.3rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.62rem 1.15rem;border-radius:8px;font-size:.85rem;font-weight:700;
+  border:1px solid var(--line);background:#161b22;color:var(--text);
+  transition:transform .2s,border-color .2s,box-shadow .2s,color .2s;
+}
+.btn:hover{border-color:var(--green);color:var(--green);transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.4)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#04140a}
+.btn.primary:hover{background:#4ae264;color:#04140a;box-shadow:0 6px 22px rgba(57,211,83,.35)}
+.btn .arr{font-weight:400}
+
+/* STATS */
+.stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;
+  width:min(780px,100%);position:relative;z-index:1;
+}
+.stat{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:.9rem 1rem;text-align:center;
+}
+.stat dd{font-size:1.5rem;font-weight:800;color:var(--green);line-height:1.2}
+.stat dt{font-size:.72rem;color:var(--dim);letter-spacing:.05em;text-transform:uppercase;margin-top:.2rem}
+.stat small{font-size:.65rem;color:var(--dim);font-weight:400}
 
 /* LAYOUT */
-main{width:min(900px,100%);margin:0 auto;padding:2rem 1rem 4rem}
-section{margin:3.2rem 0;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+main{width:min(920px,100%);margin:0 auto;padding:1.5rem 1rem 4rem}
+section{margin:3.4rem 0;opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
 section.visible{opacity:1;transform:none}
 h2{
   font-size:1.15rem;color:var(--green);
@@ -110,9 +143,70 @@ h2{
 }
 h2::before{content:"$";color:var(--dim)}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.intro{color:var(--dim);font-size:.85rem;margin:-.5rem 0 1.1rem}
 
-/* GRID */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}
+/* TABLE */
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:720px;table-layout:fixed}
+#findings th:nth-child(1){width:2.5rem}
+#findings th:nth-child(2){width:8.75rem}
+#findings th:nth-child(4){width:10.5rem}
+#findings th:nth-child(5){width:4.5rem}
+#findings th:nth-child(6){width:11.5rem}
+#also th:nth-child(1){width:22%}
+#also th:nth-child(3){width:11.5rem}
+caption{
+  text-align:left;padding:.7rem 1rem;color:var(--dim);font-size:.75rem;
+  border-bottom:1px solid var(--line);
+}
+th,td{padding:.65rem .9rem;text-align:left;vertical-align:top}
+thead th{
+  color:var(--dim);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+  border-bottom:1px solid var(--line);background:#0d1117;white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--line)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(57,211,83,.04)}
+td.t-type{color:#fff;font-weight:700}
+td.t-prog{color:var(--cyan)}
+
+.tag{
+  display:inline-block;font-size:.68rem;letter-spacing:.03em;padding:.1rem .55rem;border-radius:999px;
+  border:1px solid var(--green);color:var(--green);background:rgba(57,211,83,.08);
+  white-space:nowrap;margin:.1rem .15rem .1rem 0;
+}
+.tag.amber{border-color:var(--amber);color:var(--amber);background:rgba(210,153,34,.08)}
+.tag.gray{border-color:#38424f;color:var(--dim);background:rgba(154,164,176,.05)}
+.sev-cell{color:var(--red);font-weight:700;white-space:nowrap}
+.note{color:var(--dim);font-size:.75rem;margin-top:.9rem}
+
+/* ALSO RESEARCHED */
+table.tri{margin-top:.2rem}
+table.tri td.t-topic{color:#fff;font-weight:700}
+
+/* WRITE-UPS */
+details{
+  background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  margin-top:.8rem;transition:border-color .25s;
+}
+details[open]{border-color:var(--green)}
+details:hover{border-color:#2c3948}
+summary{
+  cursor:pointer;list-style:none;
+  display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;
+  padding:.85rem 1.1rem;
+}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";color:var(--green);font-weight:800;width:1rem;flex:none}
+details[open] summary::before{content:"–"}
+summary:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:8px}
+.sum-title{color:#fff;font-size:.9rem;font-weight:700;line-height:1.35}
+.d-body{padding:.2rem 1.1rem 1rem 2.55rem}
+.d-body p{color:var(--dim);font-size:.83rem;margin:.35rem 0}
+.d-body .k{color:var(--cyan)}
+
+/* GRID / CARDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1rem}
 .card{
   background:var(--panel);border:1px solid var(--line);border-radius:10px;
   padding:1.1rem 1.2rem;transition:all .25s;
@@ -120,6 +214,9 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .card:hover{border-color:var(--green);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .card h3{color:#fff;font-size:.95rem;margin-bottom:.4rem}
 .card p{color:var(--dim);font-size:.82rem}
+.card ul{list-style:none;margin-top:.4rem}
+.card li{color:var(--dim);font-size:.8rem}
+.card li::before{content:"▸ ";color:var(--green)}
 
 /* TOOLS */
 .tools{display:flex;flex-wrap:wrap;gap:.55rem}
@@ -128,9 +225,10 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
   background:#161b22;border:1px solid var(--line);color:var(--text);
 }
 .tool:hover{border-color:var(--cyan);color:var(--cyan)}
+.stack-label{color:var(--dim);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;margin:1rem 0 .5rem}
 
 /* TIMELINE */
-.timeline{border-left:2px solid var(--line);padding-left:1.4rem;position:relative}
+.timeline{border-left:2px solid var(--line);padding-left:1.4rem}
 .tl-item{margin-bottom:1.6rem;position:relative}
 .tl-item::before{
   content:"";position:absolute;left:calc(-1.4rem - 6px);top:.45rem;
@@ -140,68 +238,58 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .tl-date{color:var(--cyan);font-size:.75rem}
 .tl-item h3{color:#fff;font-size:.95rem;margin:.2rem 0}
 .tl-item p,.tl-item li{color:var(--dim);font-size:.83rem}
-ul{list-style:none;margin-top:.5rem}
-li::before{content:"▸ ";color:var(--green)}
-
-/* FINDINGS */
-.findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
-.finding{
-  text-align:center;padding:1.2rem .8rem;border-radius:10px;
-  background:var(--panel);border:1px solid var(--line);
-}
-.finding .bug{color:var(--red);font-weight:700;font-size:1.05rem}
-.finding .ok{color:var(--green);font-size:.75rem}
-.note{color:var(--dim);font-size:.75rem;margin-top:1rem;text-align:center}
-
-/* FINDING DETAIL */
-.finding-card{
-  background:var(--panel);border:1px solid var(--line);border-radius:10px;
-  padding:1.15rem 1.25rem;margin-top:1.1rem;transition:all .25s;
-}
-.finding-card:hover{border-color:var(--green);box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.fc-head{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem}
-.fc-title{color:#fff;font-size:.95rem;font-weight:700;line-height:1.35}
-.sev{
-  font-size:.68rem;letter-spacing:.04em;padding:.12rem .55rem;border-radius:999px;
-  border:1px solid var(--red);color:var(--red);background:rgba(248,81,73,.08);
-  white-space:nowrap;
-}
-.sev.ok{border-color:var(--green);color:var(--green);background:rgba(57,211,83,.08)}
-.fc-prog{color:var(--cyan);font-size:.76rem;margin-top:.4rem;word-break:break-word}
-.fc-rows{margin-top:.9rem;display:grid;gap:.65rem}
-.fc-row{display:grid;grid-template-columns:86px 1fr;gap:.75rem}
-.fc-k{
-  color:var(--dim);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
-  padding-top:.1rem;
-}
-.fc-v{color:var(--text);font-size:.82rem}
+.tl-item ul{list-style:none;margin-top:.5rem}
+.tl-item li::before{content:"▸ ";color:var(--green)}
 
 /* CONTACT */
-.contact a{display:block;padding:.4rem 0;font-size:.9rem}
-.contact .k{color:var(--dim);font-size:.78rem}
+.contact-card{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:1.6rem 1.4rem;text-align:center;
+}
+.contact-card p{color:var(--dim);font-size:.85rem;margin-bottom:1.2rem}
+.contact-card .cta{justify-content:center;margin-top:0}
 
 footer{
   text-align:center;color:var(--dim);font-size:.72rem;
   padding:2rem 1rem;border-top:1px solid var(--line);
 }
 
-@media(max-width:600px){
-  nav{font-size:.72rem;gap:.8rem}
-  .term-body{padding:1rem}
-  .fc-row{grid-template-columns:1fr;gap:.1rem}
-  .fc-k{padding-top:0}
+@media(max-width:680px){
+  nav{font-size:.72rem;gap:.75rem}
+  .term-body{padding:1.1rem 1rem 1.3rem}
+  .line{font-size:.8rem}
+  /* stacked table */
+  table{min-width:0}
+  thead{position:absolute;left:-9999px}
+  tbody tr{display:block;padding:.7rem .9rem}
+  td{display:block;padding:.2rem 0;border:none}
+  td::before{
+    content:attr(data-label);display:block;
+    color:var(--dim);font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;
+  }
+  td.t-no{position:absolute;left:-9999px}
+  caption{font-size:.72rem}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .cursor{animation:none}
+  section{opacity:1;transform:none;transition:none}
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="#summary">summary</a>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav aria-label="Sections">
+  <a href="#findings">findings</a>
+  <a href="#also">also researched</a>
+  <a href="#writeups">write-ups</a>
   <a href="#skills">skills</a>
   <a href="#stack">stack</a>
   <a href="#experience">experience</a>
-  <a href="#research">research</a>
-  <a href="#findings">findings</a>
   <a href="#education">education</a>
   <a href="#contact">contact</a>
 </nav>
@@ -213,48 +301,246 @@ footer{
       <span class="term-title">ahmed@sec: ~/portfolio</span>
     </div>
     <div class="term-body">
-      <div class="line"><span class="prompt">ahmed@sec:~$</span> <span id="typed"></span></div>
-      <div class="line out" id="boot1" style="display:none">[+] identity verified</div>
-      <div class="line out" id="boot2" style="display:none">[+] loading profile...</div>
-      <h1 class="name" id="nameEl" style="display:none">Ahmed Alaa<span class="cursor"></span></h1>
-      <p class="role" id="roleEl" style="display:none">Cybersecurity Specialist · Bug Bounty Hunter · Security Researcher</p>
-      <div class="chips" id="chipsEl" style="display:none">
-        <span class="chip">Egypt</span>
-        <a class="chip" href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
-        <a class="chip" href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener">Bugcrowd /Mrl0lxX</a>
-        <a class="chip" href="https://www.comcast.com" target="_blank" rel="noopener">Hall of Fame - Comcast</a>
+      <p class="line"><span class="prompt">ahmed@sec:~$</span> <span id="typed" aria-hidden="true"></span><span class="cursor" aria-hidden="true"></span></p>
+      <div id="boot">
+        <p class="boot-line">[+] identity verified &nbsp;·&nbsp; [+] profile loaded</p>
+        <h1 class="name">Ahmed Alaa</h1>
+        <p class="role">Security Researcher · Bug Bounty Hunter</p>
+        <p class="value">I find the web vulnerabilities that scanners miss. <strong>Six valid P3 reports</strong> accepted across a major US telecom program and a private engagement, every one responsibly disclosed.</p>
+        <div class="cta">
+          <a class="btn primary" href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener noreferrer">Bugcrowd / Mrl0lxX <span class="arr">↗</span></a>
+          <a class="btn" href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
+        </div>
       </div>
     </div>
   </div>
+
+  <dl class="stats" aria-label="Key numbers">
+    <div class="stat"><dd>6</dd><dt>Valid P3 reports</dt><small>5 XSS · 1 disclosure</small></div>
+    <div class="stat"><dd>20</dd><dt>Reports submitted</dt><small>bounty &amp; VDP programs</small></div>
+    <div class="stat"><dd>4</dd><dt>Bounty rewards</dt><small>telecom program</small></div>
+    <div class="stat"><dd>1</dd><dt>Finding resolved</dt><small>fix confirmed</small></div>
+  </dl>
 </header>
 
-<main>
+<main id="main">
 
-<section id="summary">
-  <h2>whoami</h2>
-  <div class="card">
-    <p>Cybersecurity professional with hands-on experience in web application security, vulnerability assessment, and bug bounty hunting. Currently working in a government cybersecurity role, with strong expertise in attack surface mapping, reconnaissance, web security testing, and responsible vulnerability disclosure.</p>
-    <p style="margin-top:.7rem">Focused on identifying complex web application vulnerabilities, improving security posture, and delivering clear remediation guidance for technical and executive stakeholders.</p>
+<section id="findings">
+  <h2>findings at a glance</h2>
+  <p class="intro">Every valid report in my submission history. Target hostnames, endpoints and payloads are never published.</p>
+  <div class="table-wrap">
+    <table>
+      <caption>Valid vulnerability reports. Reward status is exactly as each program recorded it.</caption>
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Type</th>
+          <th scope="col">What it was</th>
+          <th scope="col">Program</th>
+          <th scope="col">Severity</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="t-no" data-label="#">1</td>
+          <td class="t-type" data-label="Type">Reflected XSS</td>
+          <td data-label="What it was">Attribute injection in a login page</td>
+          <td class="t-prog" data-label="Program">Comcast Xfinity Bug Bounty</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Rewarded</span></td>
+        </tr>
+        <tr>
+          <td class="t-no" data-label="#">2</td>
+          <td class="t-type" data-label="Type">Reflected XSS</td>
+          <td data-label="What it was">Fix bypass: still exploitable on production after the test-environment fix</td>
+          <td class="t-prog" data-label="Program">Comcast Xfinity Bug Bounty</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Rewarded</span></td>
+        </tr>
+        <tr>
+          <td class="t-no" data-label="#">3</td>
+          <td class="t-type" data-label="Type">Reflected XSS</td>
+          <td data-label="What it was">Authentication flow spanning multiple domains</td>
+          <td class="t-prog" data-label="Program">Comcast Xfinity Bug Bounty</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Rewarded</span></td>
+        </tr>
+        <tr>
+          <td class="t-no" data-label="#">4</td>
+          <td class="t-type" data-label="Type">Reflected XSS</td>
+          <td data-label="What it was">Test-environment management interface (older report, fixed)</td>
+          <td class="t-prog" data-label="Program">Comcast Xfinity Bug Bounty</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Rewarded · Resolved</span></td>
+        </tr>
+        <tr>
+          <td class="t-no" data-label="#">5</td>
+          <td class="t-type" data-label="Type">Reflected XSS</td>
+          <td data-label="What it was">WAF keyword-filter bypass in a management interface</td>
+          <td class="t-prog" data-label="Program">Comcast Xfinity VDP</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Accepted · points</span></td>
+        </tr>
+        <tr>
+          <td class="t-no" data-label="#">6</td>
+          <td class="t-type" data-label="Type">Information disclosure</td>
+          <td data-label="What it was">Outdated issue-tracking system on a test asset, readable without login</td>
+          <td class="t-prog" data-label="Program">Private program (undisclosed)</td>
+          <td class="sev-cell" data-label="Severity">P3</td>
+          <td data-label="Status"><span class="tag">✓ Accepted</span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <p class="note">// counts taken from my own submission history. Everything else I submitted was triaged as informational, duplicate or not applicable, and is listed below rather than counted as a finding.</p>
+</section>
+
+<section id="also">
+  <h2>also researched</h2>
+  <p class="intro">Other issues I reported and how triage landed. None of these is claimed as a valid finding: they are here because a submission history reads better when it is complete.</p>
+  <div class="table-wrap">
+    <table class="tri">
+      <caption>Non-valid triage outcomes, listed for transparency.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Topic</th>
+          <th scope="col">What I tested</th>
+          <th scope="col">Triage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="t-topic" data-label="Topic">SSRF</td>
+          <td data-label="What I tested">Blind server-side request forgery against in-scope services</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">Exposed management infrastructure</td>
+          <td data-label="What I tested">Internet-facing management services running outdated software</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">Access control in a GIS print tool</td>
+          <td data-label="What I tested">Whether an unauthenticated user could drive a map export service</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">TLS session resumption</td>
+          <td data-label="What I tested">mTLS bypass through TLS 1.3 session resumption</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">gRPC in non-production</td>
+          <td data-label="What I tested">Unauthenticated gRPC endpoints in QA and dev environments</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">Header and redirect issues</td>
+          <td data-label="What I tested">Host-header reflection and open redirect, insecure headers on a redirect, TRACE method, expired certificate on a login path, login-name enumeration</td>
+          <td data-label="Triage"><span class="tag amber">triaged: informational</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">Reflected XSS via an email parameter</td>
+          <td data-label="What I tested">Same class as the rewarded reports, on a different parameter</td>
+          <td data-label="Triage"><span class="tag gray">duplicate</span></td>
+        </tr>
+        <tr>
+          <td class="t-topic" data-label="Topic">Reflected XSS via a proxy parameter</td>
+          <td data-label="What I tested">Reported on a newer production host of the same program</td>
+          <td data-label="Triage"><span class="tag gray">not applicable</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">// informational = acknowledged, no bounty; duplicate = already reported; not applicable = outside the program's reward scope. The same classes were also submitted to two other programs.</p>
+</section>
+
+<section id="writeups">
+  <h2>selected write-ups</h2>
+  <p class="intro">How the findings worked and how they were fixed, with all target detail removed.</p>
+
+  <details>
+    <summary><span class="sum-title">Reflected XSS via attribute injection in a login page</span> <span class="tag amber">P3</span> <span class="tag">✓ rewarded</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> User input was written into an HTML attribute on a login page without encoding, so a crafted link could break out of the attribute and run script in the victim's browser.</p>
+      <p><span class="k">impact:</span> Script executed in the context of the page for whoever opened the link, with every action available to a signed-in user.</p>
+      <p><span class="k">fix:</span> Context-aware output encoding, strict input validation and a CSP.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="sum-title">Fix bypass: the same issue still live on production</span> <span class="tag amber">P3</span> <span class="tag">✓ rewarded</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> The report was closed after a fix went into a test environment. I demonstrated the same execution on production, which showed the fix had not covered the code path that mattered.</p>
+      <p><span class="k">impact:</span> The vulnerability stayed exploitable in the environment that carries real users, after it had been marked handled.</p>
+      <p><span class="k">fix:</span> Patch the shared code path rather than a single environment, and verify the fix on production.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="sum-title">Reflected XSS across an authentication flow spanning several domains</span> <span class="tag amber">P3</span> <span class="tag">✓ rewarded</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> Input in the authentication flow was reflected without encoding, and the flow crossed several domains, so one injection point reached more than one origin.</p>
+      <p><span class="k">impact:</span> Wider blast radius than a single-domain reflection, in the part of the app where sessions are created.</p>
+      <p><span class="k">fix:</span> Encode output by context on every domain that shares the flow, and validate input at the entry point.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="sum-title">Reflected XSS in a test-environment management interface</span> <span class="tag amber">P3</span> <span class="tag">✓ rewarded · resolved</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> A management interface on a test environment reflected a request parameter into an HTML response. Reported, fixed by the product team, and closed as resolved.</p>
+      <p><span class="k">fix:</span> Context-aware output encoding and parameter allowlisting.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="sum-title">WAF keyword-filter bypass: reflected XSS in a management interface</span> <span class="tag amber">P3</span> <span class="tag">✓ accepted · points</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> A web application firewall blocked the obvious form of the payload by filtering a keyword. An alternative syntax reached the same object and executed, so the filter was not a real control.</p>
+      <p><span class="k">impact:</span> Script execution in the browser of an administrator who opened a crafted link, on an interface that manages production map services.</p>
+      <p><span class="k">fix:</span> Encode output by context. Keep WAF rules as a speed bump, never as the thing standing between input and the browser.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary><span class="sum-title">Unauthenticated information disclosure from an outdated internal system</span> <span class="tag amber">P3</span> <span class="tag">✓ accepted</span></summary>
+    <div class="d-body">
+      <p><span class="k">summary:</span> An issue-tracking system on a test asset was running a version with a known flaw and was reachable without credentials. It returned internal information to an unauthenticated request.</p>
+      <p><span class="k">impact:</span> Internal records readable by anyone who found the host, with no login and no interaction from a victim. Test assets are a common path into the real thing: they hold copied data and share naming and access patterns with production.</p>
+      <p><span class="k">fix:</span> Patch the system, take test assets off the public internet, and treat non-production exposure as a production risk.</p>
+    </div>
+  </details>
 </section>
 
 <section id="skills">
-  <h2>core skills</h2>
+  <h2>skills by area</h2>
   <div class="grid">
-    <div class="card"><h3>Web Application Security</h3><p>Application testing, session management, authentication, and OWASP risk reduction.</p></div>
-    <div class="card"><h3>Bug Bounty Hunting</h3><p>Private program invitations, vulnerability discovery, responsible disclosure, and reporting.</p></div>
-    <div class="card"><h3>Reconnaissance</h3><p>Attack surface mapping, subdomain discovery, asset analysis, and targeted reconnaissance.</p></div>
-    <div class="card"><h3>Advanced Exploitation</h3><p>XSS, SSRF, HTTP request smuggling, business logic bypasses, and API security testing.</p></div>
+    <div class="card"><h3>Web &amp; Session Security</h3><p>Manual testing of web applications and the flows that create sessions.</p>
+      <ul><li>Reflected XSS and filter bypass</li><li>Unauthenticated information disclosure</li><li>Authentication &amp; redirect flows</li><li>Access control checks</li></ul>
+    </div>
+    <div class="card"><h3>Research areas</h3><p>Where I'm building depth, with reports submitted and triaged.</p>
+      <ul><li>SSRF</li><li>gRPC and services in non-production</li><li>TLS and transport behaviour</li><li>Attack surface mapping</li></ul>
+    </div>
+    <div class="card"><h3>Bug Bounty Craft</h3><p>End-to-end work on public and private programs.</p>
+      <ul><li>Vulnerability discovery</li><li>Fix-bypass verification</li><li>Responsible disclosure</li><li>Triage-ready reports</li></ul>
+    </div>
+    <div class="card"><h3>Reporting &amp; Remediation</h3><p>Findings a developer can act on and an executive can read.</p>
+      <ul><li>Clear PoC write-ups</li><li>Impact analysis</li><li>Remediation guidance</li></ul>
+    </div>
   </div>
 </section>
 
 <section id="stack">
-  <h2>technical stack</h2>
-  <div class="tools" style="margin-bottom:.7rem">
+  <h2>toolkit</h2>
+  <p class="stack-label">Testing &amp; recon</p>
+  <div class="tools">
     <span class="tool">Burp Suite</span><span class="tool">Nuclei</span><span class="tool">Nmap</span>
     <span class="tool">FFUF</span><span class="tool">Amass</span><span class="tool">Subfinder</span>
     <span class="tool">httpx</span><span class="tool">Katana</span><span class="tool">SQLMap</span><span class="tool">Wireshark</span>
   </div>
+  <p class="stack-label">Languages &amp; platforms</p>
   <div class="tools">
     <span class="tool">Python</span><span class="tool">PHP</span><span class="tool">HTML</span>
     <span class="tool">JavaScript</span><span class="tool">Linux</span><span class="tool">Kali Linux</span><span class="tool">Windows</span>
@@ -267,178 +553,78 @@ footer{
     <div class="tl-item">
       <span class="tl-date">2024 - Present</span>
       <h3>Cybersecurity Specialist · Government Organization</h3>
-      <p>Delivering security assessments, vulnerability validation, and risk reduction for web applications and services.</p>
+      <p>Security assessments, vulnerability validation, and risk reduction for web applications and services.</p>
       <ul>
-        <li>Conduct security assessments and vulnerability validation activities</li>
-        <li>Analyze web applications and services for security weaknesses</li>
-        <li>Support security operations and risk reduction initiatives</li>
+        <li>Conduct security assessments and validate vulnerabilities</li>
+        <li>Analyze web applications and services for weaknesses</li>
+        <li>Support security operations and risk reduction</li>
         <li>Produce technical findings and remediation recommendations</li>
       </ul>
     </div>
-  </div>
-</section>
-
-<section id="research">
-  <h2>bug bounty & research</h2>
-  <div class="timeline">
     <div class="tl-item">
-      <h3>Independent Security Researcher</h3>
-      <p>Active participant in bug bounty programs and private invitations, focused on discovering complex issues and delivering high-quality disclosure.</p>
+      <span class="tl-date">Ongoing</span>
+      <h3>Independent Security Researcher · Bug Bounty</h3>
+      <p>Active on public and private programs, with a focus on reflection bugs that survive a first fix attempt and on what non-production systems expose.</p>
       <ul>
-        <li>Large-scale reconnaissance and asset discovery</li>
-        <li>Focus on XSS, SSRF, API Security, Request Smuggling, and Business Logic issues</li>
-        <li>Responsible vulnerability disclosure and technical reporting</li>
+        <li>Six valid P3 reports: five reflected XSS and one unauthenticated information disclosure</li>
+        <li>Four rewarded with a bounty on a major US telecom program; one accepted with points under its VDP</li>
+        <li>Research across SSRF, access control, TLS and non-production exposure</li>
       </ul>
     </div>
   </div>
-</section>
-
-<section id="findings">
-  <h2>confirmed findings</h2>
-  <div class="findings">
-    <div class="finding"><div class="bug">XSS</div><div class="ok">✓ accepted</div></div>
-    <div class="finding"><div class="bug">SSRF</div><div class="ok">✓ accepted</div></div>
-    <div class="finding"><div class="bug">Business Logic</div><div class="ok">✓ accepted</div></div>
-  </div>
-  <div class="finding-card">
-    <div class="fc-head">
-      <span class="fc-title">Reflected XSS via Attribute Injection</span>
-      <span class="sev">P3</span>
-      <span class="sev ok">&#10003; accepted &amp; rewarded</span>
-    </div>
-    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
-    <div class="fc-rows">
-      <div class="fc-row">
-        <div class="fc-k">summary</div>
-        <div class="fc-v">Unsafe handling of user input inside an HTML attribute on a login page allowed script execution in a victim's browser.</div>
-      </div>
-      <div class="fc-row">
-        <div class="fc-k">impact</div>
-        <div class="fc-v">Possible actions in the context of a user's session.</div>
-      </div>
-      <div class="fc-row">
-        <div class="fc-k">remediation</div>
-        <div class="fc-v">Context-aware output encoding, strict input validation and a CSP.</div>
-      </div>
-    </div>
-  </div>
-  <div class="finding-card">
-    <div class="fc-head">
-      <span class="fc-title">Reflected XSS, Fix Bypass on Production</span>
-      <span class="sev">P3</span>
-      <span class="sev ok">&#10003; accepted &amp; rewarded</span>
-    </div>
-    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
-    <div class="fc-rows">
-      <div class="fc-row">
-        <div class="fc-k">summary</div>
-        <div class="fc-v">The issue was closed on a test environment, and I showed it persisted on production, so the fix was incomplete.</div>
-      </div>
-      <div class="fc-row">
-        <div class="fc-k">remediation</div>
-        <div class="fc-v">Fix in shared code rather than per environment, with context-aware output encoding.</div>
-      </div>
-    </div>
-  </div>
-  <div class="finding-card">
-    <div class="fc-head">
-      <span class="fc-title">Reflected XSS in a GIS Server Management Interface</span>
-      <span class="sev">P3</span>
-      <span class="sev ok">&#10003; accepted</span>
-    </div>
-    <div class="fc-prog">Comcast Xfinity Vulnerability Disclosure Program (Bugcrowd)</div>
-    <div class="fc-rows">
-      <div class="fc-row">
-        <div class="fc-k">summary</div>
-        <div class="fc-v">A proxy-style parameter reflected user-supplied content into an HTML response, and a WAF keyword filter was not sufficient to stop script execution.</div>
-      </div>
-      <div class="fc-row">
-        <div class="fc-k">remediation</div>
-        <div class="fc-v">Encode output by context and validate the parameter against an allowlist, rather than relying on WAF keyword filtering.</div>
-      </div>
-    </div>
-  </div>
-  <div class="finding-card">
-    <div class="fc-head">
-      <span class="fc-title">Reflected XSS in a Test Environment Management Interface</span>
-      <span class="sev">P3</span>
-      <span class="sev ok">&#10003; accepted &middot; rewarded &middot; resolved</span>
-    </div>
-    <div class="fc-prog">Comcast Xfinity Bug Bounty (Bugcrowd)</div>
-    <div class="fc-rows">
-      <div class="fc-row">
-        <div class="fc-k">summary</div>
-        <div class="fc-v">A proxy-style parameter reflected user-supplied content into an HTML response, and the issue was fixed by the vendor team.</div>
-      </div>
-      <div class="fc-row">
-        <div class="fc-k">remediation</div>
-        <div class="fc-v">Context-aware output encoding and parameter allowlisting.</div>
-      </div>
-    </div>
-  </div>
-  <p class="note">// all interactions on this page are presentation-only - no forms, no inputs, no data collected</p>
 </section>
 
 <section id="education">
   <h2>education</h2>
   <div class="card">
     <h3>Bachelor's Degree (In Progress) - MET Academy, Mansoura</h3>
-    <p>Graduation project on vulnerability discovery, with multiple university website vulnerabilities identified during studies.</p>
+    <p>Graduation project focused on vulnerability discovery.</p>
   </div>
 </section>
 
 <section id="contact">
   <h2>contact</h2>
-  <div class="card contact">
-    <span class="k">location</span>
-    <a href="#">Egypt</a>
-    <span class="k">phone</span>
-    <a href="tel:+201030634965">01030634965</a>
-    <span class="k">email</span>
-    <a href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
-    <span class="k">bugcrowd</span>
-    <a href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener">bugcrowd.com/h/Mrl0lxX</a>
-    <span class="k">hall of fame</span>
-    <a href="https://www.comcast.com" target="_blank" rel="noopener">Comcast</a>
+  <div class="contact-card">
+    <p>Open to security roles, collaboration, and responsible-disclosure conversations. Based in Egypt, working worldwide.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://bugcrowd.com/h/Mrl0lxX" target="_blank" rel="noopener noreferrer">Bugcrowd / Mrl0lxX <span class="arr">↗</span></a>
+      <a class="btn" href="mailto:mrlol777xX@proton.me">mrlol777xX@proton.me</a>
+    </div>
   </div>
+  <p class="note" style="text-align:center;margin-top:1.2rem">// presentation-only page: no forms, no inputs, no tracking, no external requests</p>
 </section>
 
 </main>
 
-<footer>© Ahmed Alaa - built with curiosity & coffee</footer>
+<footer>© Ahmed Alaa - built with curiosity &amp; coffee</footer>
 
 <script>
 (function(){
-  // typing intro
-  var cmd = './start-portfolio.sh --mode=hire-me';
-  var el = document.getElementById('typed');
-  var i = 0;
-  function type(){
-    if(i <= cmd.length){
-      el.textContent = cmd.slice(0, i++);
-      setTimeout(type, 45);
-    } else {
-      setTimeout(function(){
-        document.getElementById('boot1').style.display = 'block';
-        setTimeout(function(){
-          document.getElementById('boot2').style.display = 'block';
-          setTimeout(function(){
-            document.getElementById('nameEl').style.display = 'block';
-            document.getElementById('roleEl').style.display = 'block';
-            document.getElementById('chipsEl').style.display = 'flex';
-          }, 350);
-        }, 250);
-      }, 200);
-    }
-  }
-  type();
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var boot = document.getElementById('boot');
+  var typed = document.getElementById('typed');
 
-  // scroll reveal
+  if(reduce){
+    typed.textContent = './whoami --recruiter-brief';
+  } else {
+    boot.style.visibility = 'hidden';
+    var cmd = './whoami --recruiter-brief';
+    var i = 0;
+    (function type(){
+      if(i <= cmd.length){
+        typed.textContent = cmd.slice(0, i++);
+        setTimeout(type, 38);
+      } else {
+        boot.style.visibility = 'visible';
+      }
+    })();
+  }
+
   var obs = new IntersectionObserver(function(entries){
     entries.forEach(function(e){
       if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
     });
-  }, {threshold:.12});
+  }, {threshold:.1});
   document.querySelectorAll('section').forEach(function(s){ obs.observe(s); });
 })();
 </script>

